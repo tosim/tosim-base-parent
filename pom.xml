@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tosim.base</groupId>
+    <artifactId>tosim-base-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>integrate tosim-third-party-dependencies, tosim-second-party-dependiences, and list pluginManagement
+        for chirldren to use certain plugin.because pluginManagement can not include by import pom, only parent.
+    </description>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <tosim-third-dependencies.version>1.0-SNAPSHOT</tosim-third-dependencies.version>
+        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <spring-boot.version>2.0.6.RELEASE</spring-boot.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--third-party-dependencies-->
+            <dependency>
+                <groupId>com.tosim.base</groupId>
+                <artifactId>tosim-third-dependencies</artifactId>
+                <version>${tosim-third-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!--slf4j + log4j2-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-web</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+
+        <!--exclude spring other log framework-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--include application-profile.... file-->
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/application*.yml</include>
+                    <include>**/application*.yaml</include>
+                    <include>**/application*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>**/application*.yml</exclude>
+                    <exclude>**/application*.yaml</exclude>
+                    <exclude>**/application*.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <!--maven compile plugin-->
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <!--version in spring-boot-dependencies.pom-->
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <parameters>true</parameters>
+                    </configuration>
+                </plugin>
+
+                <!--spring-boot-maven-plugin-->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <mainClass>${start-class}</mainClass>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>libs-releases</id>
+            <url>http://47.100.63.91:7021/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>libs-snapshots</id>
+            <url>http://47.100.63.91:7021/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
