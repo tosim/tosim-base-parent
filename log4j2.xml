@@ -2,6 +2,8 @@
 <!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
 <!--Configuration后面的status,这个用于设置log4j2自身内部的信息输出,可以不设置,当设置成trace时,你会看到log4j2内部各种详细输出-->
 <!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身,设置间隔秒数-->
+<!--此份配置文件默认最多保存7天的日志， 每种级别的日志文件最多10个，每个文件最大50MB-->
+<!--文件名按日志级别-日期（精确到日）-下标，一天产生的日志最多50MB*10=500MB,7天最大500MB*7=3500MB,所以需要保证磁盘至少有3500MB的空间-->
 <configuration status="WARN" monitorInterval="1800">
     <Properties>
         <!-- 日志默认存放的位置,这里设置为项目根路径下,也可指定绝对路径 -->
